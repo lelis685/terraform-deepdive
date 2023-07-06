@@ -9,8 +9,29 @@ resource "docker_container" "nodered_container" {
     internal = 1880
     external = 1880
   }
-
 }
+
+resource "random_string" "random" {
+  length = 4
+  special = false
+  upper = false
+}
+
+
+resource "docker_container" "nodered_container_2" {
+  name  = join("-",["nodered", random_string.random.result])
+  image = docker_image.nodered_image.image_id
+  ports {
+    internal = 1881
+    external = 1881
+  }
+}
+
+output "containers-name" {
+  value = join(",",[docker_container.nodered_container.name, docker_container.nodered_container_2.name])
+  description = "name of containers"
+} 
+
 
 output "IP-address" {
   value = docker_container.nodered_container.network_data[0].ip_address
