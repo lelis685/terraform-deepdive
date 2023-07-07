@@ -2,31 +2,44 @@ resource "docker_image" "nodered_image" {
   name = "nodered/node-red:latest"
 }
 
+variable "counter" {
+  type = number
+  default = 1
+}
+
+variable "ext_port" {
+  type = number
+  default = 1880
+}
+
+variable "int_port" {
+  type = number
+  default = 1881
+  validation {
+    condition = var.int_port == 1880
+    error_message = "Internal port must be 1880."
+  }
+}
+
+
+
 resource "random_string" "random" {
-  count = 2
+  count = var.counter
   length = 4
   special = false
   upper = false
 }
 
 
-resource "random_integer" "random_int" {
-  count = 2
-  min = 1
-  max = 100
-}
-
-
 resource "docker_container" "nodered_container" {
-  count = 2
+  count = var.counter
   name  = join("-",["nodered", random_string.random[count.index].result])  
   image = docker_image.nodered_image.image_id
   ports {
-    internal = random_integer.random_int[count.index].result
-    external = random_integer.random_int[count.index].result
+    internal = var.int_port
+    external = var.ext_port
   }
 }
-
 
 
 output "IP-address" {
