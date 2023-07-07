@@ -1,5 +1,5 @@
 resource "docker_image" "nodered_image" {
-  name = lookup(var.image, var.env)
+  name = var.image[var.env]
 }
 
 resource "random_string" "random" {
@@ -15,7 +15,7 @@ resource "docker_container" "nodered_container" {
   image = docker_image.nodered_image.image_id
   ports {
     internal = var.int_port
-    external = var.ext_port[count.index]
+    external = var.ext_port[var.env][count.index]
   }
 }
 

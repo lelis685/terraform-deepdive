@@ -10,5 +10,5 @@ output "container-name" {
 
 output "image" {
   value       = docker_image.nodered_image.name
-  description = "name of container"
+  description = "name of image"
 }

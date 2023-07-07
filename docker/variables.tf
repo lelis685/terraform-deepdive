@@ -20,14 +20,18 @@ variable "image" {
 
 
 locals {
-  counter = length(var.ext_port)
+  counter = length(var.ext_port[var.env])
 }
 
 variable "ext_port" {
-  type    = list(number)
+  type    = map
   validation {
-    condition     = max(var.ext_port...) <= 65535 && min(var.ext_port...) > 0
-    error_message = "External port must in the valid range 0-65535."
+    condition     = max(var.ext_port["dev"]...) <= 65535 && min(var.ext_port["dev"]...) >= 1980
+    error_message = "External port must in the valid range 1980-65535."
+  }
+   validation {
+    condition     = max(var.ext_port["prod"]...) < 1980 && min(var.ext_port["prod"]...) >=1880
+    error_message = "External port must in the valid range 1880-1980."
   }
 }
 
