@@ -30,7 +30,7 @@ resource "docker_container" "nodered_container" {
 
 
 output "IP-address" {
-  value = [for i in docker_container.nodered_container[*]: flatten(formatlist("%s:%s", join("", i.network_data[*].ip_address), i.ports[*].external)) ]
+  value = flatten([for i in docker_container.nodered_container[*]: flatten(formatlist("%s:%s", join("", i.network_data[*].ip_address), i.ports[*].external)) ])
   description = "ip container"
 } 
 
