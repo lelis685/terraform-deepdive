@@ -1,13 +1,11 @@
-variable "counter" {
-  type    = number
-  default = 1
+locals {
+  counter = length(var.ext_port)
 }
 
 variable "ext_port" {
-  type    = number
-  sensitive = true
+  type    = list(number)
   validation {
-    condition     = var.ext_port <= 65535 && var.ext_port > 0
+    condition     = max(var.ext_port...) <= 65535 && min(var.ext_port...) > 0
     error_message = "External port must in the valid range 0-65535."
   }
 }
