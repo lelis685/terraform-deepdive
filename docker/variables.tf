@@ -1,3 +1,24 @@
+variable "env" {
+  type = string
+  default = "dev"
+  description = "Environment to deploy"
+  validation {
+    condition     = contains(["dev", "prod"], var.env)
+    error_message = "Environment must be dev or prod."
+  }
+}
+
+variable "image" {
+  type = map
+  description = "image for container"
+  default = {
+    dev = "nodered/node-red:latest"
+    prod = "nodered/node-red:latest-minimal"
+  }
+
+}
+
+
 locals {
   counter = length(var.ext_port)
 }

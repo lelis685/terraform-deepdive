@@ -3,8 +3,12 @@ output "IP-address" {
   description = "ip container"
 }
 
-
 output "container-name" {
   value       = docker_container.nodered_container[*].name
+  description = "name of container"
+}
+
+output "image" {
+  value       = docker_image.nodered_image.name
   description = "name of container"
 }
