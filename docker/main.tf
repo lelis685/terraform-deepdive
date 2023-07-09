@@ -18,6 +18,7 @@ module "container" {
   image_in    = module.image.image_out.image_id
   int_port_in = var.int_port
   ext_port_in = var.ext_port[var.env][count.index]
+  container_path_in = "/data"
 }
 
 

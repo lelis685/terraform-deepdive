@@ -13,3 +13,5 @@ variable "int_port_in" {
 variable "ext_port_in" {
   description = "number of external port"
 }
+
+variable "container_path_in" {}
