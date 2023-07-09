@@ -8,7 +8,3 @@ output "container-name" {
   description = "name of container"
 }
 
-output "image" {
-  value       = docker_image.nodered_image.name
-  description = "name of image"
-}

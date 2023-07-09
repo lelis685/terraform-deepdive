@@ -1,5 +1,7 @@
-resource "docker_image" "nodered_image" {
-  name = var.image[var.env]
+module "image" {
+  source = "./image"
+  image_in = var.image[var.env]
+  
 }
 
 resource "random_string" "random" {
@@ -10,13 +12,16 @@ resource "random_string" "random" {
 }
 
 resource "docker_container" "nodered_container" {
+  depends_on = [module.image]
   count = local.counter
   name  = join("-", ["nodered", random_string.random[count.index].result])
-  image = docker_image.nodered_image.image_id
+  image = module.image.image_out.image_id
   ports {
     internal = var.int_port
     external = var.ext_port[var.env][count.index]
   }
+
 }
+
 
 
