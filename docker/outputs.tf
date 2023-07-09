@@ -1,10 +1,10 @@
 output "IP-address" {
-  value       = flatten([for i in docker_container.nodered_container[*] : flatten(formatlist("%s:%s", join("", i.network_data[*].ip_address), i.ports[*].external))])
+  value       = flatten(module.container[*].IP-address)
   description = "ip container"
 }
 
 output "container-name" {
-  value       = docker_container.nodered_container[*].name
+  value       = flatten(module.container[*].container-name)
   description = "name of container"
 }
 

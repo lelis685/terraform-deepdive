@@ -1,6 +1,6 @@
 variable "env" {
-  type = string
-  default = "dev"
+  type        = string
+  default     = "dev"
   description = "Environment to deploy"
   validation {
     condition     = contains(["dev", "prod"], var.env)
@@ -9,10 +9,10 @@ variable "env" {
 }
 
 variable "image" {
-  type = map
+  type        = map(any)
   description = "image for container"
   default = {
-    dev = "nodered/node-red:latest"
+    dev  = "nodered/node-red:latest"
     prod = "nodered/node-red:latest-minimal"
   }
 
@@ -24,13 +24,13 @@ locals {
 }
 
 variable "ext_port" {
-  type    = map
+  type = map(any)
   validation {
     condition     = max(var.ext_port["dev"]...) <= 65535 && min(var.ext_port["dev"]...) >= 1980
     error_message = "External port must in the valid range 1980-65535."
   }
-   validation {
-    condition     = max(var.ext_port["prod"]...) < 1980 && min(var.ext_port["prod"]...) >=1880
+  validation {
+    condition     = max(var.ext_port["prod"]...) < 1980 && min(var.ext_port["prod"]...) >= 1880
     error_message = "External port must in the valid range 1880-1980."
   }
 }
