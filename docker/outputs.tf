@@ -1,10 +1,4 @@
-output "IP-address" {
-  value       = flatten(module.container[*].IP-address)
-  description = "ip container"
+output "application_access" {
+  value       = module.container
+  description = "The name and socket for each application."
 }
-
-output "container-name" {
-  value       = flatten(module.container[*].container-name)
-  description = "name of container"
-}
-
