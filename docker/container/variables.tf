@@ -14,6 +14,6 @@ variable "ext_port_in" {
   description = "number of external port"
 }
 
-variable "container_path_in" {}
 variable "count_in" {}
 variable "env" {}
+variable "volumes_in" {}
