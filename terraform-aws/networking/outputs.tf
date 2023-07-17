@@ -12,3 +12,12 @@ output "db_security_group" {
   value = [aws_security_group.mtc_sg["rds"].id]
 }
 
+output "public_sg" {
+  value = aws_security_group.mtc_sg["public"].id
+}
+
+output "public_subnets" {
+  value = aws_subnet.mtc_public_subnet.*.id
+}
+
+
