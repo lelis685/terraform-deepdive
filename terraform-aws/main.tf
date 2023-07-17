@@ -41,3 +41,15 @@ module "loadbalancing" {
   listener_port           = 80
   listener_protocol       = "HTTP"
 }
+
+
+module "compute" {
+  source          = "./compute"
+  public_sg       = module.networking.public_sg
+  public_subnets  = module.networking.public_subnets
+  instance_count  = 1
+  instance_type   = "t2.micro"
+  vol_size        = "20"
+  key_name        = "id_rsa"
+  public_key_path = var.public_key_path
+}

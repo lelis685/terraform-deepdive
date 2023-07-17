@@ -19,10 +19,11 @@ resource "aws_lb_target_group" "mtc_tg" {
     interval            = var.elb_interval
   }
   lifecycle {
-    ignore_changes = [name]
+    ignore_changes        = [name]
     create_before_destroy = true
   }
 }
+
 
 resource "aws_lb_listener" "mtc_lb_listener" {
   load_balancer_arn = aws_lb.mtc_alb.arn
