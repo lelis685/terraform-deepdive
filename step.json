@@ -1,42 +1,60 @@
 {
-    "Comment": "A description of my state machine",
-    "StartAt": "Start Processing",
-    "States": {
-      "Start Processing": {
-        "Type": "Pass",
-        "Next": "Athena StartQueryExecution"
+  "Comment": "A description of my state machine",
+  "StartAt": "Result Query",
+  "States": {
+    "Result Query": {
+      "Type": "Pass",
+      "Next": "Date.now()",
+      "Result": {
+        "date": "2023-08-08"
+      }
+    },
+    "Date.now()": {
+      "Type": "Pass",
+      "Parameters": {
+        "startTime.$": "$$.Execution.StartTime",
+        "splitter": "T",
+        "date.$": "$.date"
       },
-      "Athena StartQueryExecution": {
-        "Type": "Task",
-        "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
-        "Parameters": {
-          "QueryExecutionContext": {
-            "Catalog": "AwsDataCatalog",
-            "Database": "water_data_database"
-          },
-          "WorkGroup": "primary",
-          "QueryString": "SELECT dt FROM \"water$partitions\" ORDER BY dt DESC LIMIT 1",
-          "ResultConfiguration": {
-            "OutputLocation": "s3://lelis-result-athena/"
-          }
-        },
-        "Next": "Athena GetQueryResults"
+      "Next": "Split Date"
+    },
+    "Split Date": {
+      "Type": "Pass",
+      "Parameters": {
+        "localDate.$": "States.StringSplit($.startTime, $.splitter)",
+        "date.$": "$.date"
       },
-      "Athena GetQueryResults": {
-        "Type": "Task",
-        "Resource": "arn:aws:states:::athena:getQueryResults",
-        "Parameters": {
-          "MaxResults": 2,
-          "QueryExecutionId.$": "$.QueryExecution.QueryExecutionId"
-        },
-        "ResultSelector": {
-          "date.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
-        },
-        "Next": "Pass"
-      },
-      "Pass": {
-        "Type": "Pass",
-        "End": true
+      "Next": "Extract Date"
+    },
+    "Extract Date": {
+      "Type": "Pass",
+      "Next": "Data valida ?",
+      "Parameters": {
+        "date.$": "$.date",
+        "localDate.$": "$.localDate[0]"
+      }
+    },
+    "Data valida ?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.date",
+          "StringEqualsPath": "$.localDate",
+          "Next": "Sim"
+        }
+      ],
+      "Default": "Nao"
+    },
+    "Sim": {
+      "Type": "Pass",
+      "End": true
+    },
+    "Nao": {
+      "Type": "Pass",
+      "End": true,
+      "Result": {
+        "ValueEnteredInForm": ""
       }
     }
   }
+}
