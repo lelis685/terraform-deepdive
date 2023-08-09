@@ -1,0 +1,42 @@
+{
+    "Comment": "A description of my state machine",
+    "StartAt": "Start Processing",
+    "States": {
+      "Start Processing": {
+        "Type": "Pass",
+        "Next": "Athena StartQueryExecution"
+      },
+      "Athena StartQueryExecution": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+        "Parameters": {
+          "QueryExecutionContext": {
+            "Catalog": "AwsDataCatalog",
+            "Database": "water_data_database"
+          },
+          "WorkGroup": "primary",
+          "QueryString": "SELECT dt FROM \"water$partitions\" ORDER BY dt DESC LIMIT 1",
+          "ResultConfiguration": {
+            "OutputLocation": "s3://lelis-result-athena/"
+          }
+        },
+        "Next": "Athena GetQueryResults"
+      },
+      "Athena GetQueryResults": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::athena:getQueryResults",
+        "Parameters": {
+          "MaxResults": 2,
+          "QueryExecutionId.$": "$.QueryExecution.QueryExecutionId"
+        },
+        "ResultSelector": {
+          "date.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
+        },
+        "Next": "Pass"
+      },
+      "Pass": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+  }
